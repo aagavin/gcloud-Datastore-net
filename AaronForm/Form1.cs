@@ -27,7 +27,9 @@ namespace AaronForm
         {
             if (e.ColumnIndex != 3)
             {
-                MessageBox.Show($"Something changed {e.RowIndex}");
+                DataGridViewCell changedCell = this.dataGridView1[e.ColumnIndex, e.RowIndex];
+                DataGridViewCell CellId = this.dataGridView1[0, e.RowIndex];
+                MessageBox.Show($"Something changed {changedCell.Value} with id of {CellId.Value}");
             }
         }
 

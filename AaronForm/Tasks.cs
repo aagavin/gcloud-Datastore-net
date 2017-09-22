@@ -19,7 +19,6 @@ namespace AaronForm
 
         }
 
-
         public List<Task> GetTasks()
         {
             List<Task> taskList = new List<Task>();
@@ -31,6 +30,15 @@ namespace AaronForm
             }
 
             return taskList;
+        }
+
+
+        public void UpdateTasks(int key)
+        {
+            //Key updatekey = new Key();
+            //updatekey.
+
+            //this._db.Update(
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace AaronForm
 {
+
     class Task
     {
         public long Id { get; set; }
