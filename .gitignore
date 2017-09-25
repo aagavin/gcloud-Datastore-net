@@ -8,7 +8,7 @@
 *.sln.docstates
 
 gcloud-Datastore-net
-COMP-306-50ff31942be8.json
+*.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
