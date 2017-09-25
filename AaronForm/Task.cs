@@ -11,14 +11,16 @@ namespace AaronForm
         public long Id { get; set; }
         public string CreatedBy { get; set; }
         public string Description { get; set; }
+        public DateTime Created {get; set;}
         public bool Done { get; set; }
 
-        public Task(long id, string createdBy, string description, bool? done=false)
+        public Task(long id, string createdBy, string description, DateTime created, bool done=false)
         {
             Id = id;
             CreatedBy = createdBy;
             Description = description;
-            Done = done!=null? true: false;
+            Created = created;
+            Done = done;
         }
     }
 }

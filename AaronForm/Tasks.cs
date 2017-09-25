@@ -12,6 +12,7 @@ namespace AaronForm
         private List<Task> taskList;
         private string _projectId;
         private DatastoreDb _db;
+        private KeyFactory _keyFactory;
 
         public Tasks()
         {
@@ -19,8 +20,8 @@ namespace AaronForm
             System.Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", fullPath);
             _projectId = "comp-306";
             this._db = DatastoreDb.Create(_projectId);
-
-            taskList = new List<Task>();
+            this._keyFactory = this._db.CreateKeyFactory("Task");
+            this.taskList = new List<Task>();
 
         }
 
@@ -31,10 +32,38 @@ namespace AaronForm
             Query query = new Query("Task");
             foreach (Entity entity in _db.RunQueryLazily(query))
             {
-                taskList.Add(new Task(entity.Key.Path[0].Id, entity["CreatedBy"].StringValue, entity["Description"].StringValue, entity["Done"].BooleanValue));
+                taskList.Add(new Task(entity.Key.Path[0].Id, entity["CreatedBy"].StringValue, entity["Description"].StringValue, entity["Created"].TimestampValue.ToDateTime(), entity["Done"].BooleanValue));
             }
 
             return taskList;
+        }
+
+        public void deleteTasks(List<string> ids)
+        {
+            foreach (string id in ids)
+            {
+                Key key = this._keyFactory.CreateKey(long.Parse(ids[0]));
+                this._db.Delete(key);
+            }
+
+        }
+
+        public void addTask(string name, string description)
+        {
+            Entity task = new Entity()
+            {
+                Key = this._keyFactory.CreateIncompleteKey(),
+                ["Created"] = DateTime.UtcNow,
+                ["Description"] = new Value()
+                {
+                    StringValue = description,
+                    ExcludeFromIndexes = true
+                },
+                ["CreatedBy"] = name,
+                ["Done"] = false
+            };
+
+            this._db.Insert(task);
         }
 
         public void UpdateTask(long taskId, string colToUpdate, string value)
@@ -44,9 +73,13 @@ namespace AaronForm
             propertyInfo.SetValue(a, Convert.ChangeType(value, propertyInfo.PropertyType), null);
 
             Entity task = new Entity() {
-                Key = this._db.CreateKeyFactory("Task").CreateKey(a.Id),
+                Key = this._keyFactory.CreateKey(a.Id),
                 ["CreatedBy"] = a.CreatedBy,
-                ["Description"] = a.Description,
+                ["Description"] = new Value() {
+                    StringValue = a.Description,
+                    ExcludeFromIndexes = true
+                },
+                ["Created"] = a.Created,
                 ["Done"] = a.Done
             };
             this._db.Update(task);
