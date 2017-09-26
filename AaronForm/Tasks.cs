@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
 using Google.Cloud.Datastore.V1;
-using System.Windows.Forms;
 
 namespace AaronForm
 {
@@ -15,6 +13,9 @@ namespace AaronForm
         private DatastoreDb _db;
         private KeyFactory _keyFactory;
 
+        /// <summary>
+        /// Manages DAO between application and Google Datastore
+        /// </summary>
         public Tasks()
         {
             string fullPath = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory() + "\\..\\..\\COMP-306-fad385355cc2.json");
@@ -26,7 +27,10 @@ namespace AaronForm
 
         }
 
-
+        /// <summary>
+        /// Gets a list of tasks
+        /// </summary>
+        /// <returns></returns>
         public List<Task> GetTasks()
         {
 
@@ -39,16 +43,25 @@ namespace AaronForm
             return taskList;
         }
 
+        /// <summary>
+        /// removes a list of tasks by id
+        /// </summary>
+        /// <param name="ids"></param>
         public void deleteTasks(List<string> ids)
         {
             foreach (string id in ids)
             {
-                Key key = this._keyFactory.CreateKey(long.Parse(ids[0]));
+                Key key = this._keyFactory.CreateKey(long.Parse(id));
                 this._db.Delete(key);
             }
 
         }
 
+        /// <summary>
+        /// adds a task 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="description"></param>
         public void addTask(string name, string description)
         {
             Entity task = new Entity()
@@ -67,6 +80,13 @@ namespace AaronForm
             this._db.Insert(task);
         }
 
+
+        /// <summary>
+        /// replaces a task (update)
+        /// </summary>
+        /// <param name="taskId"></param>
+        /// <param name="colToUpdate"></param>
+        /// <param name="value"></param>
         public void UpdateTask(long taskId, string colToUpdate, string value)
         {
             Task a = this.taskList.First(t => t.Id == taskId);

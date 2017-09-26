@@ -110,6 +110,12 @@ namespace AaronForm
         /// <param name="e"></param>
         private void button_delete_Click(object sender, EventArgs e)
         {
+
+            DialogResult result = MessageBox.Show("Are you sure you want to delete these tasks","Are you sure", MessageBoxButtons.YesNo);
+            if(result != DialogResult.Yes){
+                return;
+            }
+
             DataGridViewSelectedRowCollection selectedRows =  this.dataGridView1.SelectedRows;
 
             if(selectedRows.Count == 0)
@@ -122,7 +128,7 @@ namespace AaronForm
             foreach(DataGridViewRow row in selectedRows)
             {
                 ids.Add(row.Cells[0].Value.ToString());
-                MessageBox.Show($"Removed id: {row.Cells[0].Value.ToString()}");
+                this.toolStripStatusLabel1.Text = $"Removed id: {row.Cells[0].Value.ToString()}";
             }
 
             this._tasksManager.deleteTasks(ids);
